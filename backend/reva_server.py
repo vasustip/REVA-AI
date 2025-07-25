@@ -106,6 +106,9 @@ def chat():
             return jsonify({"reply": "I'm sorry, I couldn't understand that response."})
     except Exception as e:
         return jsonify({"reply": f"Error: {str(e)}"})
+@app.route("/", methods=["GET"])
+def home():
+    return "REVA backend is live."
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
