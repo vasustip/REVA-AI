@@ -1,5 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from dotenv import load_dotenv
+load_dotenv()
 import requests
 import re
 
@@ -8,7 +10,8 @@ from memory_store import add_to_history, get_last_messages, update_traits
 app = Flask(__name__)
 CORS(app)
 
-GROQ_API_KEY = "REMOVED_API_KEY"
+import os
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 GROQ_MODEL = "llama3-70b-8192"
 
 def convert_to_transliteration(text):
