@@ -1,0 +1,1607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REVA - Your Mental Health AI Companion</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Logical Mode Colors */
+            --logical-primary: #0a9396;
+            --logical-secondary: #94d2bd;
+            --logical-accent: #e9d8a6;
+            --logical-bg: #001219;
+            --logical-glow: rgba(10, 147, 150, 0.6);
+            --logical-text: #e9d8a6;
+            
+            /* Spiritual Mode Colors */
+            --spiritual-primary: #d4af37;
+            --spiritual-secondary: #7a4e1d;
+            --spiritual-accent: #f5f5dc;
+            --spiritual-bg: #1a1208;
+            --spiritual-glow: rgba(212, 175, 55, 0.6);
+            --spiritual-text: #f5f5dc;
+            
+            /* Transition */
+            --transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+            
+            /* Common */
+            --radius: 12px;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0a9396 0%, #d4af37 100%);
+            color: white;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 10;
+        }
+        
+        /* Logo styling */
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        
+        .reva-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #0a9396, #d4af37);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.7);
+            animation: pulse 2s infinite alternate;
+            opacity: 0.95;
+        }
+        
+        .logo-text {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 3.5rem;
+            letter-spacing: 3px;
+            text-shadow: 0 0 15px var(--spiritual-glow), 0 0 30px var(--logical-glow);
+            animation: glow 2s infinite alternate;
+        }
+        
+        /* Language Selection Page */
+        #language-page {
+            text-align: center;
+            padding: 40px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: var(--radius);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow);
+            animation: wobble 6s infinite ease-in-out;
+            max-width: 700px;
+            width: 90%;
+            position: relative;
+        }
+        
+        .tagline {
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            letter-spacing: 1px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            animation: wobble 4s infinite ease-in-out;
+        }
+        
+        .btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(2px);
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: var(--transition);
+            transform: translateX(-100%);
+        }
+        
+        .btn:hover::before {
+            transform: translateX(100%);
+        }
+        
+        .btn-english {
+            background: linear-gradient(45deg, var(--logical-primary), var(--logical-secondary));
+            color: var(--logical-text);
+        }
+        
+        .btn-hindi {
+            background: linear-gradient(45deg, var(--spiritual-primary), var(--spiritual-secondary));
+            color: var(--spiritual-text);
+        }
+        
+        /* Mode Selection Page */
+        #mode-page {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 100;
+        }
+        
+        .split-screen {
+            display: flex;
+            height: 100%;
+            width: 100%;
+            position: relative;
+        }
+        
+        .mode-side {
+            flex: 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+            padding: 20px;
+        }
+        
+        .logical-side {
+            background: linear-gradient(135deg, var(--logical-bg), #001b2e);
+        }
+        
+        .spiritual-side {
+            background: linear-gradient(135deg, var(--spiritual-bg), #2c1a0d);
+        }
+        
+        /* Fixed slanting line with proper alignment */
+        .split-screen::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: white;
+            left: 50%;
+            transform: translateX(-50%) rotate(15deg);
+            z-index: 5;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
+            height: 150%;
+            top: -25%;
+        }
+        
+        /* Content wrappers with proper alignment */
+        .mode-content {
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+            z-index: 2;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .mode-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 2.8rem;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        
+        .logical-title {
+            color: var(--logical-secondary);
+        }
+        
+        .spiritual-title {
+            color: var(--spiritual-primary);
+        }
+        
+        .mode-description {
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        
+        .logical-description {
+            color: var(--logical-text);
+        }
+        
+        .spiritual-description {
+            color: var(--spiritual-text);
+        }
+        
+        .mode-btn {
+            padding: 15px 50px;
+            font-size: 1.3rem;
+            border-radius: 50px;
+            z-index: 2;
+        }
+        
+        .logical-btn {
+            background: linear-gradient(45deg, var(--logical-primary), var(--logical-secondary));
+            color: var(--logical-text);
+            box-shadow: 0 0 25px var(--logical-glow);
+        }
+        
+        .spiritual-btn {
+            background: linear-gradient(45deg, var(--spiritual-primary), #a67c00);
+            color: var(--spiritual-text);
+            box-shadow: 0 0 25px var(--spiritual-glow);
+        }
+        
+        .mode-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 0 35px var(--logical-glow), 0 0 50px rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Fixed the top bar to blend with the design */
+        .mode-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            padding: 20px;
+            z-index: 20;
+        }
+        
+        .back-btn-mode {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 10;
+        }
+        
+        .back-btn-mode:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+        
+        /* Chat Interface */
+        #chat-page {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 200;
+        }
+        
+        .chat-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: var(--radius);
+            overflow: hidden;
+            position: relative;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(5px);
+        }
+        
+        .chat-header {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            z-index: 2;
+            flex-wrap: wrap;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            flex: 1;
+            min-width: 50px;
+        }
+        
+        .header-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 3;
+        }
+        
+        .chat-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 2.2rem;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            text-align: center;
+        }
+        
+        .chat-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 2px;
+            text-align: center;
+        }
+        
+        .header-right {
+            display: flex;
+            gap: 15px;
+            flex: 1;
+            justify-content: flex-end;
+            min-width: 150px;
+        }
+        
+        .back-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 10;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+        
+        .header-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .header-btn:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .message {
+            max-width: 80%;
+            padding: 15px 20px;
+            border-radius: 18px;
+            position: relative;
+            animation: messageAppear 0.3s ease-out;
+            line-height: 1.5;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+        }
+        
+        .user-message {
+            align-self: flex-end;
+            background: linear-gradient(135deg, #2a9d8f, #1d7a6b);
+            border-bottom-right-radius: 5px;
+        }
+        
+        .ai-message {
+            align-self: flex-start;
+            background: linear-gradient(135deg, #3a506b, #1c2541);
+            border-bottom-left-radius: 5px;
+        }
+        
+        .message-content {
+            font-size: 1.1rem;
+        }
+        
+        .message-time {
+            font-size: 0.7rem;
+            opacity: 0.7;
+            text-align: right;
+            margin-top: 5px;
+        }
+        
+        .input-area {
+            display: flex;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.4);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            gap: 10px;
+            z-index: 20;
+            position: relative;
+        }
+        
+        #user-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1.1rem;
+            outline: none;
+            transition: var(--transition);
+            cursor: text;
+            z-index: 21;
+        }
+        
+        #user-input:focus {
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+        
+        .voice-btn, .send-btn, .stop-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: var(--transition);
+            z-index: 21;
+        }
+        
+        .voice-btn {
+            background: linear-gradient(135deg, #e76f51, #e9c46a);
+        }
+        
+        .send-btn {
+            background: linear-gradient(135deg, #2a9d8f, #264653);
+        }
+        
+        .stop-btn {
+            background: linear-gradient(135deg, #e63946, #e76f51);
+            display: none;
+        }
+        
+        .voice-btn:hover, .send-btn:hover, .stop-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Floating elements */
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .floating-element {
+            position: absolute;
+            animation: float 15s infinite ease-in-out;
+            opacity: 0.7;
+            z-index: 1;
+        }
+        
+        .logical-element {
+            color: var(--logical-secondary);
+            text-shadow: 0 0 10px var(--logical-glow);
+        }
+        
+        .spiritual-element {
+            color: var(--spiritual-primary);
+            text-shadow: 0 0 10px var(--spiritual-glow);
+        }
+        
+        /* Stars background for spiritual mode */
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 5s infinite ease-in-out;
+            pointer-events: none;
+        }
+        
+        /* Brain background for logical mode */
+        .brain-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.05;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .brain {
+            font-size: 20rem;
+            animation: pulse 8s infinite ease-in-out;
+        }
+        
+        /* Credits */
+        .credits {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            font-size: 0.9rem;
+            opacity: 0.7;
+            z-index: 10;
+        }
+        
+        /* Chat History Panel */
+        #history-panel {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 280px;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 300;
+            transition: var(--transition);
+            padding: 20px;
+            overflow-y: auto;
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .history-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .close-history {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .close-history:hover {
+            transform: rotate(90deg);
+        }
+        
+        .new-chat-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #0a9396, #94d2bd);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .new-chat-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(10, 147, 150, 0.4);
+        }
+        
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .history-item {
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .history-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .history-date {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            padding-right: 25px; /* Space for delete button */
+        }
+        
+        .history-preview {
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-top: 5px;
+            padding-right: 25px; /* Space for delete button */
+        }
+        
+        .delete-history {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: var(--transition);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .delete-history:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #e63946;
+            transform: scale(1.1);
+        }
+        
+        /* Ambient sound indicator */
+        .sound-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 100;
+            transition: var(--transition);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .sound-indicator:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Animations */
+        @keyframes wobble {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-10px) rotate(1deg); }
+            50% { transform: translateY(0) rotate(0deg); }
+            75% { transform: translateY(-5px) rotate(-1deg); }
+        }
+        
+        @keyframes glow {
+            0% { text-shadow: 0 0 10px var(--spiritual-glow), 0 0 20px var(--logical-glow); }
+            100% { text-shadow: 0 0 20px var(--spiritual-glow), 0 0 40px var(--logical-glow); }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(20px, -20px) rotate(5deg); }
+            50% { transform: translate(-15px, 15px) rotate(-5deg); }
+            75% { transform: translate(10px, -10px) rotate(3deg); }
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.05; }
+            50% { transform: scale(1.1); opacity: 0.1; }
+        }
+        
+        @keyframes messageAppear {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .logo-text { font-size: 2.5rem; }
+            .tagline { font-size: 1.2rem; }
+            .btn-group { flex-direction: column; gap: 15px; }
+            .mode-title { font-size: 2rem; }
+            .split-screen { flex-direction: column; }
+            .split-screen::before { display: none; }
+            .logical-side, .spiritual-side { padding: 40px 20px; }
+            .mode-content { width: 90%; margin: 0 auto; }
+            .header-center { flex-direction: column; }
+            .chat-title { font-size: 1.8rem; }
+            .header-left, .header-right { min-width: auto; }
+        }
+         /* Existing CSS remains the same, add these new styles at the end */
+
+        /* Mode Switch Buttons */
+        .mode-switch {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            justify-content: center;
+        }
+
+        .mode-switch button {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .mode-switch button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .mode-switch button.active {
+            background: rgba(255, 255, 255, 0.3);
+            font-weight: 600;
+        }
+
+        .logical-mode .mode-switch button.logical-btn {
+            background: var(--logical-primary);
+            color: var(--logical-text);
+        }
+
+        .spiritual-mode .mode-switch button.spiritual-btn {
+            background: var(--spiritual-primary);
+            color: var(--spiritual-text);
+        }
+
+        /* Mode Indicator */
+        .mode-indicator {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .mode-indicator i {
+            font-size: 0.8rem;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .mode-switch {
+                flex-direction: column;
+                gap: 8px;
+            }
+    
+            .mode-switch button {
+                padding: 6px 12px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Background particles -->
+    <div class="floating-elements">
+        <!-- Generated by JS -->
+    </div>
+    
+    <!-- Credits -->
+    <div class="credits">
+        Created with ❤️ by Vasu & Raghav
+    </div>
+    
+    <!-- Language Selection Page -->
+    <div class="container">
+        <div id="language-page">
+            <div class="logo-container">
+                <div class="reva-logo">
+                    <i class="fas fa-brain" style="font-size: 2.5rem;"></i>
+                </div>
+                <div class="logo-text">REVA</div>
+            </div>
+            <div class="tagline">Every Emotion Matters</div>
+            <div class="btn-group">
+                <button class="btn btn-english" onclick="selectLanguage('english')">
+                    <i class="fas fa-language"></i> English
+                </button>
+                <button class="btn btn-hindi" onclick="selectLanguage('hindi')">
+                    <i class="fas fa-language"></i> हिंदी (Hindi)
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Mode Selection Page -->
+    <div id="mode-page">
+        <div class="split-screen">
+            <!-- New top header that blends with the design -->
+            <div class="mode-header">
+                <div class="back-btn-mode" id="back-to-language">
+                    <i class="fas fa-arrow-left"></i>
+                </div>
+            </div>
+            
+            <div class="mode-side logical-side">
+                <div class="mode-content logical-content">
+                    <h2 class="mode-title logical-title">Logical Mode</h2>
+                    <p class="mode-description logical-description">
+                        Engage in thoughtful, rational conversations. REVA will provide structured, 
+                        evidence-based guidance to help you understand and manage your thoughts.
+                    </p>
+                    <button class="btn mode-btn logical-btn" onclick="selectMode('logical')">
+                        <i class="fas fa-brain"></i> Choose Logical
+                    </button>
+                </div>
+            </div>
+            
+            <div class="mode-side spiritual-side">
+                <div class="mode-content spiritual-content">
+                    <h2 class="mode-title spiritual-title">Spiritual Mode</h2>
+                    <p class="mode-description spiritual-description">
+                        Connect with wisdom beyond logic. REVA will offer insights inspired by spiritual 
+                        traditions, helping you find meaning and inner peace.
+                    </p>
+                    <button class="btn mode-btn spiritual-btn" onclick="selectMode('spiritual')">
+                        <i class="fas fa-star-and-crescent"></i> Choose Spiritual
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Chat Interface -->
+    <div id="chat-page">
+        <div class="chat-container">
+            <div class="chat-header">
+                <div class="header-left">
+                    <div class="back-btn" id="back-to-mode">
+                        <i class="fas fa-arrow-left"></i>
+                    </div>
+                </div>
+                
+                <div class="header-center">
+                    <div class="chat-title">REVA</div>
+                    <div class="chat-subtitle" id="mode-indicator">Your Mental Health Companion</div>
+                </div>
+                
+                <div class="header-right">
+                    <button class="header-btn" id="history-btn" title="Chat History">
+                        <i class="fas fa-history"></i>
+                    </button>
+                    <button class="header-btn" id="sound-btn" title="Ambient Sound">
+                        <i class="fas fa-music"></i>
+                    </button>
+                    <button class="header-btn" id="new-chat-btn" title="New Chat">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="chat-messages" id="chat-messages">
+                <div class="message ai-message">
+                    <div class="message-content">
+                        Hello! I'm REVA, your mental health companion. How are you feeling today?
+                    </div>
+                    <div class="message-time">REVA • Just now</div>
+                </div>
+            </div>
+            
+            <div class="input-area">
+                <input type="text" id="user-input" placeholder="Type your message...">
+                <button class="voice-btn" id="voice-btn">
+                    <i class="fas fa-microphone"></i>
+                </button>
+                <button class="stop-btn" id="stop-btn">
+                    <i class="fas fa-stop"></i>
+                </button>
+                <button class="send-btn" id="send-btn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat History Panel -->
+    <div id="history-panel">
+        <div class="history-header">
+            <div class="history-title">Chat History</div>
+            <button class="close-history" id="close-history">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <button class="new-chat-btn" id="new-chat-history-btn">
+            <i class="fas fa-plus"></i> New Chat
+        </button>
+        <div class="history-list" id="history-list">
+            <!-- History items will be added here -->
+        </div>
+    </div>
+
+    <!-- Ambient Sound Indicator -->
+    <div class="sound-indicator" id="sound-indicator">
+        <i class="fas fa-music"></i>
+    </div>
+
+<script>
+                     // Current settings
+let currentLanguage = 'english';
+let currentMode = 'logical';
+let recognition = null;
+let isListening = false;
+let userId = "user_" + Math.random().toString(36).substr(2, 9);
+let currentSessionId = "session_" + Date.now();
+let chatHistory = {
+    logical: {},
+    spiritual: {}
+};
+let synth = window.speechSynthesis;
+let ambientSound = null;
+let isSoundPlaying = false;
+
+// DOM Elements
+const languagePage = document.getElementById('language-page');
+const modePage = document.getElementById('mode-page');
+const chatPage = document.getElementById('chat-page');
+const chatMessages = document.getElementById('chat-messages');
+const userInput = document.getElementById('user-input');
+const voiceBtn = document.getElementById('voice-btn');
+const stopBtn = document.getElementById('stop-btn');
+const sendBtn = document.getElementById('send-btn');
+const modeIndicator = document.getElementById('mode-indicator');
+const historyPanel = document.getElementById('history-panel');
+const historyBtn = document.getElementById('history-btn');
+const closeHistory = document.getElementById('close-history');
+const historyList = document.getElementById('history-list');
+const newChatBtn = document.getElementById('new-chat-btn');
+const newChatHistoryBtn = document.getElementById('new-chat-history-btn');
+const soundBtn = document.getElementById('sound-btn');
+const soundIndicator = document.getElementById('sound-indicator');
+const backToLanguage = document.getElementById('back-to-language');
+const backToMode = document.getElementById('back-to-mode');
+
+// Initialize floating elements
+function initFloatingElements() {
+    const container = document.querySelector('.floating-elements');
+    container.innerHTML = '';
+    
+    const logicalElements = ['🧠', '⚙️', '🔬', '📊', '📐', '🔍', '💡', '📈'];
+    const spiritualElements = ['✨', '🌙', '☯️', '🕉️', '☸️', '🕊️', '🌸', '🌿'];
+    
+    for (let i = 0; i < 20; i++) {
+        const element = document.createElement('div');
+        element.classList.add('floating-element');
+        
+        if (i % 2 === 0) {
+            element.classList.add('logical-element');
+            element.innerHTML = logicalElements[Math.floor(Math.random() * logicalElements.length)];
+        } else {
+            element.classList.add('spiritual-element');
+            element.innerHTML = spiritualElements[Math.floor(Math.random() * spiritualElements.length)];
+        }
+        
+        const size = Math.random() * 40 + 20;
+        element.style.fontSize = `${size}px`;
+        element.style.left = `${Math.random() * 100}%`;
+        element.style.top = `${Math.random() * 100}%`;
+        element.style.animationDuration = `${Math.random() * 20 + 10}s`;
+        element.style.animationDelay = `${Math.random() * 5}s`;
+        
+        container.appendChild(element);
+    }
+}
+
+function createStars() {
+    const starsContainer = document.createElement('div');
+    starsContainer.classList.add('stars');
+    
+    for (let i = 0; i < 200; i++) {
+        const star = document.createElement('div');
+        star.classList.add('star');
+        
+        const size = Math.random() * 2;
+        star.style.width = `${size}px`;
+        star.style.height = `${size}px`;
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.top = `${Math.random() * 100}%`;
+        star.style.animationDelay = `${Math.random() * 5}s`;
+        
+        starsContainer.appendChild(star);
+    }
+    
+    return starsContainer;
+}
+
+function createBrain() {
+    const brainContainer = document.createElement('div');
+    brainContainer.classList.add('brain-container');
+    
+    const brain = document.createElement('div');
+    brain.classList.add('brain');
+    brain.innerHTML = '🧠';
+    
+    brainContainer.appendChild(brain);
+    return brainContainer;
+}
+
+function selectLanguage(lang) {
+    currentLanguage = lang;
+    languagePage.style.opacity = '0';
+    languagePage.style.transform = 'translateY(20px)';
+    
+    setTimeout(() => {
+        languagePage.style.display = 'none';
+        modePage.style.display = 'block';
+        setTimeout(() => {
+            modePage.style.opacity = '1';
+            modePage.style.transform = 'translateY(0)';
+        }, 50);
+        initFloatingElements();
+    }, 300);
+}
+
+function switchMode(newMode) {
+    if (newMode !== currentMode) {
+        currentMode = newMode;
+        startNewChat();
+        updateChatTheme();
+        updateModeIndicator();
+        
+        const existingStars = document.querySelector('.stars');
+        if (existingStars) existingStars.remove();
+        
+        const existingBrain = document.querySelector('.brain-container');
+        if (existingBrain) existingBrain.remove();
+        
+        if (currentMode === 'spiritual') {
+            chatPage.appendChild(createStars());
+        } else {
+            chatPage.appendChild(createBrain());
+        }
+    }
+}
+
+function updateModeIndicator() {
+    modeIndicator.innerHTML = `
+        <span>${currentMode === 'logical' ? 'Logical' : 'Spiritual'} Mode</span>
+        <span class="mode-indicator">
+            <i class="fas fa-${currentMode === 'logical' ? 'brain' : 'star-and-crescent'}"></i>
+            ${currentLanguage === 'english' ? 'English' : 'Hindi'}
+        </span>
+    `;
+}
+
+function selectMode(mode) {
+    switchMode(mode);
+    modePage.style.opacity = '0';
+    modePage.style.transform = 'translateY(20px)';
+    
+    setTimeout(() => {
+        modePage.style.display = 'none';
+        chatPage.style.display = 'flex';
+        setTimeout(() => {
+            chatPage.style.opacity = '1';
+            chatPage.style.transform = 'translateY(0)';
+            setTimeout(() => userInput.focus(), 300);
+        }, 50);
+    }, 300);
+}
+
+function updateChatTheme() {
+    const chatContainer = document.querySelector('.chat-container');
+    chatContainer.className = 'chat-container ' + currentMode + '-mode';
+    
+    if (currentMode === 'logical') {
+        chatContainer.style.background = 'linear-gradient(135deg, rgba(0, 18, 25, 0.85), rgba(0, 27, 46, 0.9))';
+        chatContainer.style.boxShadow = '0 0 30px rgba(10, 147, 150, 0.4)';
+    } else {
+        chatContainer.style.background = 'linear-gradient(135deg, rgba(26, 18, 8, 0.85), rgba(44, 26, 13, 0.9))';
+        chatContainer.style.boxShadow = '0 0 30px rgba(212, 175, 55, 0.4)';
+    }
+    
+    document.querySelectorAll('.mode-switch button').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.querySelector(`.mode-switch .${currentMode}-btn`).classList.add('active');
+}
+
+function addModeSwitchButtons() {
+    const modeContainer = document.createElement('div');
+    modeContainer.className = 'mode-switch';
+    
+    const logicalBtn = document.createElement('button');
+    logicalBtn.className = 'logical-btn';
+    logicalBtn.innerHTML = '<i class="fas fa-brain"></i> Logical';
+    logicalBtn.addEventListener('click', () => switchMode('logical'));
+    
+    const spiritualBtn = document.createElement('button');
+    spiritualBtn.className = 'spiritual-btn';
+    spiritualBtn.innerHTML = '<i class="fas fa-star-and-crescent"></i> Spiritual';
+    spiritualBtn.addEventListener('click', () => switchMode('spiritual'));
+    
+    modeContainer.appendChild(logicalBtn);
+    modeContainer.appendChild(spiritualBtn);
+    document.querySelector('.header-center').appendChild(modeContainer);
+    
+    document.querySelector(`.mode-switch .${currentMode}-btn`).classList.add('active');
+}
+
+function addMessage(content, isUser = false) {
+    const messageDiv = document.createElement('div');
+    messageDiv.classList.add('message');
+    messageDiv.classList.add(isUser ? 'user-message' : 'ai-message');
+    
+    const contentDiv = document.createElement('div');
+    contentDiv.classList.add('message-content');
+    contentDiv.textContent = content;
+    
+    const timeDiv = document.createElement('div');
+    timeDiv.classList.add('message-time');
+    timeDiv.textContent = isUser ? 'You • Just now' : 'REVA • Just now';
+    
+    messageDiv.appendChild(contentDiv);
+    messageDiv.appendChild(timeDiv);
+    
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    saveToHistory(content, isUser);
+}
+
+function saveToHistory(content, isUser) {
+    if (!chatHistory[currentMode][currentSessionId]) {
+        chatHistory[currentMode][currentSessionId] = {
+            date: new Date(),
+            messages: []
+        };
+    }
+    
+    chatHistory[currentMode][currentSessionId].messages.push({
+        content: content,
+        isUser: isUser,
+        timestamp: new Date()
+    });
+    
+    localStorage.setItem('revaChatHistory', JSON.stringify(chatHistory));
+    updateHistoryList();
+}
+
+function loadChatHistory() {
+    const history = localStorage.getItem('revaChatHistory');
+    if (history) {
+        try {
+            const parsed = JSON.parse(history);
+            if (parsed.logical && parsed.spiritual) {
+                chatHistory = parsed;
+            } else {
+                chatHistory = {
+                    logical: parsed || {},
+                    spiritual: {}
+                };
+            }
+        } catch (e) {
+            console.error('Error loading chat history', e);
+        }
+    }
+    updateHistoryList();
+}
+
+function updateHistoryList() {
+    historyList.innerHTML = '';
+    
+    const modeSessions = chatHistory[currentMode];
+    const sessions = Object.entries(modeSessions)
+        .sort((a, b) => new Date(b[1].date) - new Date(a[1].date));
+    
+    sessions.forEach(([sessionId, sessionData]) => {
+        const historyItem = document.createElement('div');
+        historyItem.classList.add('history-item');
+        historyItem.dataset.sessionId = sessionId;
+        
+        const date = new Date(sessionData.date);
+        const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+        
+        let preview = sessionData.messages[0]?.content || 'New conversation';
+        if (preview.length > 50) {
+            preview = preview.substring(0, 50) + '...';
+        }
+        
+        historyItem.innerHTML = `
+            <div class="history-date">${formattedDate}</div>
+            <div class="history-preview">${preview}</div>
+            <button class="delete-history" title="Delete this chat">
+                <i class="fas fa-trash"></i>
+            </button>
+        `;
+        
+        historyItem.addEventListener('click', (e) => {
+            if (!e.target.closest('.delete-history')) {
+                loadSession(sessionId);
+                closeHistoryPanel();
+            }
+        });
+        
+        const deleteBtn = historyItem.querySelector('.delete-history');
+        deleteBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            deleteChatHistory(sessionId);
+        });
+        
+        historyList.appendChild(historyItem);
+    });
+}
+
+function deleteChatHistory(sessionId) {
+    if (confirm('Are you sure you want to delete this chat?')) {
+        if (chatHistory[currentMode][sessionId]) {
+            delete chatHistory[currentMode][sessionId];
+            localStorage.setItem('revaChatHistory', JSON.stringify(chatHistory));
+            updateHistoryList();
+            
+            if (currentSessionId === sessionId) {
+                startNewChat();
+            }
+        }
+    }
+}
+
+function loadSession(sessionId) {
+    if (chatHistory[currentMode][sessionId]) {
+        currentSessionId = sessionId;
+        chatMessages.innerHTML = '';
+        
+        chatHistory[currentMode][sessionId].messages.forEach(msg => {
+            addMessage(msg.content, msg.isUser);
+        });
+        
+        const sessionDate = new Date(chatHistory[currentMode][sessionId].date);
+        modeIndicator.textContent = currentMode === 'logical' 
+            ? `Logical Mode • ${sessionDate.toLocaleDateString()}` 
+            : `Spiritual Mode • ${sessionDate.toLocaleDateString()}`;
+    }
+}
+
+function startNewChat() {
+    currentSessionId = "session_" + Date.now();
+    chatMessages.innerHTML = '';
+    addMessage("Hello! I'm REVA, your mental health companion. How are you feeling today?");
+    modeIndicator.textContent = currentMode === 'logical' 
+        ? 'Logical Mode • New Session' 
+        : 'Spiritual Mode • New Session';
+}
+
+function toggleHistoryPanel() {
+    if (historyPanel.style.left === '0px') {
+        closeHistoryPanel();
+    } else {
+        openHistoryPanel();
+    }
+}
+
+function openHistoryPanel() {
+    historyPanel.style.left = '0px';
+}
+
+function closeHistoryPanel() {
+    historyPanel.style.left = '-300px';
+}
+
+function toggleAmbientSound() {
+    if (!ambientSound) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const audioCtx = new AudioContext();
+        
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        
+        oscillator.type = 'sine';
+        oscillator.frequency.value = 200;
+        gainNode.gain.value = 0.1;
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        
+        oscillator.start();
+        
+        ambientSound = {
+            audioCtx: audioCtx,
+            oscillator: oscillator,
+            gainNode: gainNode
+        };
+        
+        isSoundPlaying = true;
+        soundBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+        soundIndicator.innerHTML = '<i class="fas fa-volume-up"></i>';
+        soundIndicator.style.background = 'rgba(10, 147, 150, 0.3)';
+    } else if (isSoundPlaying) {
+        ambientSound.gainNode.gain.value = 0;
+        isSoundPlaying = false;
+        soundBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+        soundIndicator.innerHTML = '<i class="fas fa-volume-mute"></i>';
+        soundIndicator.style.background = 'rgba(255, 255, 255, 0.1)';
+    } else {
+        ambientSound.gainNode.gain.value = 0.1;
+        isSoundPlaying = true;
+        soundBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+        soundIndicator.innerHTML = '<i class="fas fa-volume-up"></i>';
+        soundIndicator.style.background = 'rgba(10, 147, 150, 0.3)';
+    }
+}
+
+async function sendToBackend(message) {
+    try {
+        const response = await fetch('http://127.0.0.1:5000/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                user_id: userId,
+                message: message,
+                mode: currentMode,
+                language: currentLanguage
+            })
+        });
+        
+        const data = await response.json();
+        return data.reply || "I'm sorry, I didn't understand that.";
+    } catch (error) {
+        console.error('Error:', error);
+        return "Sorry, I'm having trouble connecting to the server.";
+    }
+}
+
+async function sendMessage() {
+    const message = userInput.value.trim();
+    if (message) {
+        addMessage(message, true);
+        userInput.value = '';
+        
+        voiceBtn.style.display = 'none';
+        stopBtn.style.display = 'flex';
+        
+        const reply = await sendToBackend(message);
+        addMessage(reply);
+        
+        speakText(reply);
+        
+        userInput.focus();
+        
+        voiceBtn.style.display = 'flex';
+        stopBtn.style.display = 'none';
+    }
+}
+
+function initVoiceRecognition() {
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.lang = currentLanguage === 'english' ? 'en-US' : 'hi-IN';
+        
+        recognition.onstart = function() {
+            isListening = true;
+            voiceBtn.innerHTML = '<i class="fas fa-microphone-slash"></i>';
+            voiceBtn.style.boxShadow = '0 0 20px rgba(231, 111, 81, 0.8)';
+        };
+        
+        recognition.onresult = function(event) {
+            const transcript = event.results[0][0].transcript;
+            userInput.value = transcript;
+            sendMessage();
+        };
+        
+        recognition.onerror = function(event) {
+            console.error('Speech recognition error', event.error);
+            isListening = false;
+            voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+            voiceBtn.style.display = 'flex';
+            stopBtn.style.display = 'none';
+        };
+        
+        recognition.onend = function() {
+            isListening = false;
+            voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+            voiceBtn.style.boxShadow = '';
+            voiceBtn.style.display = 'flex';
+            stopBtn.style.display = 'none';
+        };
+    } else {
+        voiceBtn.disabled = true;
+        voiceBtn.title = "Speech recognition not supported in your browser";
+    }
+}
+
+function toggleVoiceInput() {
+    if (!recognition) initVoiceRecognition();
+    
+    if (isListening) {
+        recognition.stop();
+    } else {
+        recognition.start();
+    }
+}
+
+function stopSpeech() {
+    synth.cancel();
+    voiceBtn.style.display = 'flex';
+    stopBtn.style.display = 'none';
+}
+
+function speakText(text) {
+    if ('speechSynthesis' in window) {
+        synth.cancel();
+        
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = currentLanguage === 'english' ? 'en-US' : 'hi-IN';
+        utterance.rate = 1.1;
+        utterance.pitch = 1.0;
+        
+        synth.speak(utterance);
+        
+        voiceBtn.style.display = 'none';
+        stopBtn.style.display = 'flex';
+        
+        utterance.onend = function() {
+            voiceBtn.style.display = 'flex';
+            stopBtn.style.display = 'none';
+        };
+    }
+}
+
+function backToLanguagePage() {
+    modePage.style.display = 'none';
+    languagePage.style.display = 'block';
+    languagePage.style.opacity = '1';
+    languagePage.style.transform = 'translateY(0)';
+}
+
+function backToModePage() {
+    chatPage.style.display = 'none';
+    modePage.style.display = 'block';
+    modePage.style.opacity = '1';
+    modePage.style.transform = 'translateY(0)';
+}
+
+// Event listeners
+sendBtn.addEventListener('click', sendMessage);
+voiceBtn.addEventListener('click', toggleVoiceInput);
+stopBtn.addEventListener('click', stopSpeech);
+userInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') sendMessage();
+});
+historyBtn.addEventListener('click', toggleHistoryPanel);
+closeHistory.addEventListener('click', closeHistoryPanel);
+newChatBtn.addEventListener('click', startNewChat);
+newChatHistoryBtn.addEventListener('click', startNewChat);
+soundBtn.addEventListener('click', toggleAmbientSound);
+soundIndicator.addEventListener('click', toggleAmbientSound);
+backToLanguage.addEventListener('click', backToLanguagePage);
+backToMode.addEventListener('click', backToModePage);
+
+// Initialize
+window.onload = function() {
+    modePage.style.opacity = '0';
+    modePage.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+    chatPage.style.opacity = '0';
+    chatPage.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+    
+    initFloatingElements();
+    addModeSwitchButtons();
+    
+    userInput.addEventListener('focus', function() {
+        this.style.background = 'rgba(255, 255, 255, 0.15)';
+        this.style.boxShadow = '0 0 15px rgba(255, 255, 255, 0.2)';
+    });
+    
+    userInput.addEventListener('blur', function() {
+        this.style.background = 'rgba(255, 255, 255, 0.1)';
+        this.style.boxShadow = 'none';
+    });
+    
+    loadChatHistory();
+    updateModeIndicator();
+};
+</script>
+</body>
+</html>
