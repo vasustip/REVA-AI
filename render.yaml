@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: reva-backend
+    env: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: python reva_server.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10
+
